@@ -175,13 +175,13 @@ scene.add(car)
  */
 // Ambient light
 const ambientLight = new THREE.AmbientLight('#b9d5ff', 0.12)
-gui.add(ambientLight, 'intensity').min(0).max(0.5).step(0.001).name('ambient light')
+gui.add(ambientLight, 'intensity').min(0).max(0.5).step(0.001).name('ambient light').hide()
 scene.add(ambientLight)
 
 // Directional light
 const moonLight = new THREE.DirectionalLight('#b9d5ff', 0.12)
 moonLight.position.set(4, 5, - 2)
-gui.add(moonLight, 'intensity').min(0).max(0.5).step(0.001).name('moonlight')
+gui.add(moonLight, 'intensity').min(0).max(0.5).step(0.001).name('moonlight').hide()
 scene.add(moonLight)
 
  /* 
@@ -223,10 +223,25 @@ camera.position.y = 7
 camera.position.z = 12
 scene.add(camera)
 
-const animationParams = {
-    speed: 7
+const controlParams = {
+    speed: 7,
+    left: () => {
+        car.position.z = Math.min(car.position.z + 0.2, road.geometry.parameters.height * 0.3)
+    },
+    right: () => {
+        car.position.z = Math.max(car.position.z - 0.2, -road.geometry.parameters.height * 0.3)
+    },
+    faster: () => {
+        controlParams.speed = Math.min(controlParams.speed + 0.5, 18)
+    },
+    slower: () => {
+        controlParams.speed = Math.max(controlParams.speed - 0.5, 0)
+    }
+
 }
-gui.add(animationParams, 'speed').min(0).max(18).step(0.1).listen()
+gui.add(controlParams, 'speed').min(0).max(18).step(0.1).listen()
+gui.add(controlParams, 'left').name("←")
+gui.add(controlParams, 'right').name("→")
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
@@ -235,16 +250,16 @@ controls.enableDamping = true
 // handle keyboad arrows event:
 document.addEventListener('keydown', (event) => {
     if (event.key == 'ArrowUp') {
-        animationParams.speed = Math.min(animationParams.speed + 0.5, 18)
+        controlParams.faster()
     }
     if (event.key == 'ArrowDown') {
-        animationParams.speed = Math.max(animationParams.speed - 0.5, 0)
+        controlParams.slower()
     }
     if (event.key == 'ArrowRight') {
-        car.position.z = Math.max(car.position.z - 0.2, -road.geometry.parameters.height * 0.3)
+        controlParams.right()
     }
     if (event.key == 'ArrowLeft') {
-        car.position.z = Math.min(car.position.z + 0.2, road.geometry.parameters.height * 0.3)
+        controlParams.left()
     }
 })
         
@@ -278,13 +293,13 @@ const tick = () => {
         if (terrain.position.x > ground.geometry.parameters.width) {
             terrain.position.x = terrains.children[(i+1)%2].position.x - ground.geometry.parameters.width + 1
         } else {
-            terrain.position.x += 0.01 * animationParams.speed
+            terrain.position.x += 0.01 * controlParams.speed
         }
     }
 
-    car.position.y = Math.sin(elapsedTime * animationParams.speed / 1.6) * 0.02
-    car.rotation.z = Math.sin(elapsedTime * animationParams.speed / 1.6) * 0.02
-    car.position.z += Math.sin(elapsedTime * animationParams.speed / 3.7) * 0.001
+    car.position.y = Math.sin(elapsedTime * controlParams.speed / 1.6) * 0.02
+    car.rotation.z = Math.sin(elapsedTime * controlParams.speed / 1.6) * 0.02
+    car.position.z += Math.sin(elapsedTime * controlParams.speed / 3.7) * 0.001
 
     // Update controls
     controls.update()
