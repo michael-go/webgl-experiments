@@ -223,9 +223,31 @@ camera.position.y = 7
 camera.position.z = 12
 scene.add(camera)
 
+const animationParams = {
+    speed: 7
+}
+gui.add(animationParams, 'speed').min(0).max(18).step(0.1).listen()
+
 // Controls
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
+
+// handle keyboad arrows event:
+document.addEventListener('keydown', (event) => {
+    if (event.key == 'ArrowUp') {
+        animationParams.speed = Math.min(animationParams.speed + 0.5, 18)
+    }
+    if (event.key == 'ArrowDown') {
+        animationParams.speed = Math.max(animationParams.speed - 0.5, 0)
+    }
+    if (event.key == 'ArrowRight') {
+        car.position.z = Math.max(car.position.z - 0.2, -road.geometry.parameters.height * 0.3)
+    }
+    if (event.key == 'ArrowLeft') {
+        car.position.z = Math.min(car.position.z + 0.2, road.geometry.parameters.height * 0.3)
+    }
+})
+        
 
 /**
  * Renderer
@@ -242,10 +264,6 @@ renderer.shadowMap.enabled = true
  * Animate
  */
 const clock = new THREE.Clock()
-
-const animationParams = {
-    speed: 7
-}
 
 const tick = () => {
     const elapsedTime = clock.getElapsedTime()
@@ -266,7 +284,7 @@ const tick = () => {
 
     car.position.y = Math.sin(elapsedTime * animationParams.speed / 1.6) * 0.02
     car.rotation.z = Math.sin(elapsedTime * animationParams.speed / 1.6) * 0.02
-    car.position.z = Math.cos(elapsedTime * animationParams.speed / 3.7) * 0.2
+    car.position.z += Math.sin(elapsedTime * animationParams.speed / 3.7) * 0.001
 
     // Update controls
     controls.update()
@@ -279,5 +297,3 @@ const tick = () => {
 }
 
 tick()
-
-gui.add(animationParams, 'speed').min(0).max(18).step(0.1)
