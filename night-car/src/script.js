@@ -44,9 +44,7 @@ grassRoughnessTexture.wrapT = THREE.RepeatWrapping
  */
 
 // Ground
-const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(20, 20),
-)
+const terrain = new THREE.Group()
 
 const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(100, 100),
@@ -57,11 +55,48 @@ const ground = new THREE.Mesh(
         roughnessMap: grassRoughnessTexture,
     })
 )
-ground.geometry.setAttribute('uv2', new THREE.Float32BufferAttribute(floor.geometry.attributes.uv.array, 2))
+ground.geometry.setAttribute('uv2', new THREE.Float32BufferAttribute(ground.geometry.attributes.uv.array, 2))
 ground.rotation.x = - Math.PI * 0.5
 ground.receiveShadow = true
 
-scene.add(ground)
+terrain.add(ground)
+
+// Bushes
+const bushGeometry = new THREE.SphereGeometry(1, 16, 16)
+const bushMaterial = new THREE.MeshStandardMaterial({ color: '#89c854' })
+const bushes = new THREE.Group()
+
+for (let i = 0; i < 100; i++) {
+    const bush = new THREE.Mesh(bushGeometry, bushMaterial)
+    bush.position.x = (Math.random() - 0.5) * ground.geometry.parameters.width
+    bush.position.z = ((Math.random() < 0.5) ? 1 : -1) * (4 + Math.random() * ground.geometry.parameters.height / 4)
+    bush.position.y = 0.2
+    bush.scale.setScalar(Math.random() * 0.5 + 0.5)
+    bush.castShadow = true
+    bushes.add(bush)
+}
+
+terrain.add(bushes)
+
+// Road
+const road = new THREE.Mesh(
+    new THREE.PlaneGeometry(ground.geometry.parameters.width, 6),
+    new THREE.MeshStandardMaterial({
+        color: 'darkgrey',
+    })
+)
+road.position.y = 0.01
+road.rotation.x = - Math.PI * 0.5
+road.receiveShadow = true
+terrain.add(road)
+
+const terrains = new THREE.Group()
+terrains.add(terrain)
+const terrain_cont = terrain.clone()
+terrain_cont.position.x = terrain.position.x - ground.geometry.parameters.width
+terrains.add(terrain_cont)
+
+scene.add(terrains)
 
 // Car
 const car = new THREE.Group()
@@ -73,7 +108,6 @@ const carBody = new THREE.Mesh(
 )
 carBody.position.y = carBody.geometry.parameters.height * 0.5 + 0.4
 carBody.castShadow = true
-// carBody.geometry.center()
 car.add(carBody)
 
 const carTop = new THREE.Mesh(
@@ -134,36 +168,6 @@ car.add(carCherryLights)
 car.castShadow = true
 
 scene.add(car)
-
-// Bushes
-const bushGeometry = new THREE.SphereGeometry(1, 16, 16)
-const bushMaterial = new THREE.MeshStandardMaterial({ color: '#89c854' })
-const bushes = new THREE.Group()
-
-for (let i = 0; i < 100; i++) {
-    const bush = new THREE.Mesh(bushGeometry, bushMaterial)
-    bush.position.x = (Math.random() - 0.5) * ground.geometry.parameters.width
-    bush.position.z = ((Math.random() < 0.5) ? 1 : -1) * (4 + Math.random() * ground.geometry.parameters.height / 4)
-    bush.position.y = 0.2
-    bush.scale.setScalar(Math.random() * 0.5 + 0.5)
-    bush.castShadow = true
-    bushes.add(bush)
-}
-
-scene.add(bushes)
-
-// Road
-const road = new THREE.Mesh(
-    new THREE.PlaneGeometry(ground.geometry.parameters.width, 6),
-    new THREE.MeshStandardMaterial({
-        color: 'darkgrey',
-    })
-)
-road.position.y = 0.01
-road.rotation.x = - Math.PI * 0.5
-road.receiveShadow = true
-scene.add(road)
-
 
 
 /**
@@ -252,16 +256,11 @@ const tick = () => {
             (i == 0 ? 0 : 1) * Math.PI + elapsedTime * 5) 
     }
 
-    grassColorTexture.offset.x = - elapsedTime * 0.01 * 10 * animationParams.speed
-    grassAmbientOcclusionTexture.offset.x = grassColorTexture.offset.x
-    grassNormalTexture.offset.x = grassColorTexture.offset.x
-    grassRoughnessTexture.offset.x = grassColorTexture.offset.x
-
-    for (const bush of bushes.children) {
-        bush.position.x = 
-            (bush.position.x + 0.01 * animationParams.speed) 
-        if (bush.position.x > ground.geometry.parameters.width / 2) {
-            bush.position.x = -ground.geometry.parameters.width / 2
+    for (const [i, terrain] of terrains.children.entries()) {
+        if (terrain.position.x > ground.geometry.parameters.width) {
+            terrain.position.x = terrains.children[(i+1)%2].position.x - ground.geometry.parameters.width + 1
+        } else {
+            terrain.position.x += 0.01 * animationParams.speed
         }
     }
 
