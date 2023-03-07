@@ -6,7 +6,10 @@ import * as dat from 'lil-gui'
  * Base
  */
 // Debug
-const gui = new dat.GUI()
+const gui = new dat.GUI().hide()
+if (window.location.hash === '#debug') {
+    gui.show()
+}
 
 
 // Canvas
@@ -209,13 +212,13 @@ scene.add(car)
  */
 // Ambient light
 const ambientLight = new THREE.AmbientLight('#b9d5ff', 0.12)
-gui.add(ambientLight, 'intensity').min(0).max(0.5).step(0.001).name('ambient light').hide()
+gui.add(ambientLight, 'intensity').min(0).max(0.5).step(0.001).name('ambient light')
 scene.add(ambientLight)
 
 // Directional light
 const moonLight = new THREE.DirectionalLight('#b9d5ff', 0.12)
 moonLight.position.set(4, 5, - 2)
-gui.add(moonLight, 'intensity').min(0).max(0.5).step(0.001).name('moonlight').hide()
+gui.add(moonLight, 'intensity').min(0).max(0.5).step(0.001).name('moonlight')
 scene.add(moonLight)
 
  /* 
@@ -274,8 +277,6 @@ const controlParams = {
 
 }
 gui.add(controlParams, 'speed').min(0).max(18).step(0.1).listen()
-gui.add(controlParams, 'left').name("←")
-gui.add(controlParams, 'right').name("→")
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
@@ -296,7 +297,19 @@ document.addEventListener('keydown', (event) => {
         controlParams.left()
     }
 })
-        
+
+document.querySelector("#up").addEventListener('mousedown', () => {
+    controlParams.faster()
+})
+document.querySelector("#down").addEventListener('mousedown', () => {
+    controlParams.slower()
+})
+document.querySelector("#left").addEventListener('mousedown', () => {
+    controlParams.left()
+})
+document.querySelector("#right").addEventListener('mousedown', () => {
+    controlParams.right()
+})
 
 /**
  * Renderer
