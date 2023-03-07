@@ -226,10 +226,10 @@ scene.add(camera)
 const controlParams = {
     speed: 7,
     left: () => {
-        car.position.z = Math.min(car.position.z + 0.2, road.geometry.parameters.height * 0.3)
+        car.position.z = Math.min(car.position.z + 0.03 * controlParams.speed, road.geometry.parameters.height * 0.3)
     },
     right: () => {
-        car.position.z = Math.max(car.position.z - 0.2, -road.geometry.parameters.height * 0.3)
+        car.position.z = Math.max(car.position.z - 0.03 * controlParams.speed, -road.geometry.parameters.height * 0.3)
     },
     faster: () => {
         controlParams.speed = Math.min(controlParams.speed + 0.5, 18)
