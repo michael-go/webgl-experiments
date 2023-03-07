@@ -88,6 +88,40 @@ const road = new THREE.Mesh(
 road.position.y = 0.01
 road.rotation.x = - Math.PI * 0.5
 road.receiveShadow = true
+
+// Road lines
+const roadLines = new THREE.Group()
+
+const centerLine = new THREE.Group()
+const dashLength = 0.5
+const dashGap = 0.5
+const dashCount = Math.floor(road.geometry.parameters.width / (dashLength + dashGap))
+const dashGeometry = new THREE.PlaneGeometry(dashLength, 0.2)
+const dashMaterial = new THREE.MeshStandardMaterial({ color: 'white' })
+for (let i = 0; i < dashCount; i++) {
+    const dash = new THREE.Mesh(dashGeometry, dashMaterial)
+    dash.position.x = (i * (dashLength + dashGap)) - (road.geometry.parameters.width / 2)
+    dash.position.z = 0.02
+    centerLine.add(dash)
+}
+roadLines.add(centerLine)
+
+const line1 = new THREE.Mesh(
+    new THREE.PlaneGeometry(ground.geometry.parameters.width, 0.2),
+    new THREE.MeshStandardMaterial({
+        color: 'yellow',
+    })
+)
+line1.geometry.center()
+line1.position.y = road.geometry.parameters.height * 0.45
+line1.position.z = 0.01
+line1.receiveShadow = true
+roadLines.add(line1)
+
+const line2 = line1.clone()
+line2.position.y *= -1
+roadLines.add(line2)
+road.add(roadLines)
 terrain.add(road)
 
 const terrains = new THREE.Group()
