@@ -302,14 +302,18 @@ document.addEventListener('keydown', (event) => {
 
 function handleLongClick(buttonId, callback) {
     let interval;
-    document.querySelector(buttonId).addEventListener('mousedown', () => {
+    const start = () => {
         interval = setInterval(() => {
             callback()
         }, 100)
-    })
-    document.querySelector(buttonId).addEventListener('mouseup', () => {
+    }
+    const stop = () => {
         clearInterval(interval)
-    })
+    }
+    document.querySelector(buttonId).addEventListener('mousedown', start)
+    document.querySelector(buttonId).addEventListener('mouseup', stop)
+    document.querySelector(buttonId).addEventListener('touchstart', start)
+    document.querySelector(buttonId).addEventListener('touchend', stop)
 }
 
 handleLongClick("#up", () => {controlParams.faster()})
