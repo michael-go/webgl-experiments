@@ -21,6 +21,7 @@ const scene = new THREE.Scene()
 /**
  * Textures
  */
+// TODO: some textures are not loading, maybe race condition? need to update render once all textures are loaded
 const textureLoader = new THREE.TextureLoader()
 const grassColorTexture = textureLoader.load('/textures/grass/color.jpg')
 const grassAmbientOcclusionTexture = textureLoader.load('/textures/grass/ambientOcclusion.jpg')
@@ -284,6 +285,7 @@ controls.enableDamping = true
 
 // handle keyboad arrows event:
 document.addEventListener('keydown', (event) => {
+    // TODO: update control button css accordingly
     if (event.key == 'ArrowUp') {
         controlParams.faster()
     }
@@ -298,18 +300,22 @@ document.addEventListener('keydown', (event) => {
     }
 })
 
-document.querySelector("#up").addEventListener('mousedown', () => {
-    controlParams.faster()
-})
-document.querySelector("#down").addEventListener('mousedown', () => {
-    controlParams.slower()
-})
-document.querySelector("#left").addEventListener('mousedown', () => {
-    controlParams.left()
-})
-document.querySelector("#right").addEventListener('mousedown', () => {
-    controlParams.right()
-})
+function handleLongClick(buttonId, callback) {
+    let interval;
+    document.querySelector(buttonId).addEventListener('mousedown', () => {
+        interval = setInterval(() => {
+            callback()
+        }, 100)
+    })
+    document.querySelector(buttonId).addEventListener('mouseup', () => {
+        clearInterval(interval)
+    })
+}
+
+handleLongClick("#up", () => {controlParams.faster()})
+handleLongClick("#down", () => {controlParams.slower()})
+handleLongClick("#left", () => {controlParams.left()})
+handleLongClick("#right", () => {controlParams.right()})
 
 /**
  * Renderer
