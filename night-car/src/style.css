@@ -51,4 +51,13 @@ body
     right: 10px;
 }
 
+#speed-gauge {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    z-index: 100;
+    font: 24px Arial;
+    color: white;
+    opacity: 0.4;
+}
 

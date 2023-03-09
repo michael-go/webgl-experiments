@@ -261,23 +261,28 @@ camera.position.y = 7
 camera.position.z = 12
 scene.add(camera)
 
-const maxSpeed = 36
+const maxSpeed = 120
 const controlParams = {
-    speed: 7,
+    speed: 25,
     left: () => {
-        car.position.z = Math.min(car.position.z + 0.03 * controlParams.speed, road.geometry.parameters.height * 0.3)
+        car.position.z = Math.min(car.position.z + 0.005 * controlParams.speed, road.geometry.parameters.height * 0.3)
     },
     right: () => {
-        car.position.z = Math.max(car.position.z - 0.03 * controlParams.speed, -road.geometry.parameters.height * 0.3)
+        car.position.z = Math.max(car.position.z - 0.005 * controlParams.speed, -road.geometry.parameters.height * 0.3)
     },
     faster: () => {
-        controlParams.speed = Math.min(controlParams.speed + 0.5, maxSpeed)
+        controlParams.speed = Math.min(controlParams.speed + 1, maxSpeed)
+        updateSpeedGauge()
     },
     slower: () => {
-        controlParams.speed = Math.max(controlParams.speed - 0.5, 0)
+        controlParams.speed = Math.max(controlParams.speed - 1, 0)
+        updateSpeedGauge()
     }
-
 }
+function updateSpeedGauge() {
+    document.querySelector('#speed-gauge').innerHTML = `${controlParams.speed} km/h`
+}
+updateSpeedGauge()
 gui.add(controlParams, 'speed').min(0).max(maxSpeed).step(0.1).listen()
 
 // Controls
@@ -360,7 +365,7 @@ const tick = () => {
         if (terrain.position.x > ground.geometry.parameters.width) {
             terrain.position.x = terrains.children[(i+1)%2].position.x - ground.geometry.parameters.width + 1
         } else {
-            terrain.position.x += deltaTime * controlParams.speed
+            terrain.position.x += deltaTime * (controlParams.speed / (60 * 60 / 1000))
         }
     }
 
