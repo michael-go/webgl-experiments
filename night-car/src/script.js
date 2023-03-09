@@ -261,6 +261,7 @@ camera.position.y = 7
 camera.position.z = 12
 scene.add(camera)
 
+const maxSpeed = 36
 const controlParams = {
     speed: 7,
     left: () => {
@@ -270,14 +271,14 @@ const controlParams = {
         car.position.z = Math.max(car.position.z - 0.03 * controlParams.speed, -road.geometry.parameters.height * 0.3)
     },
     faster: () => {
-        controlParams.speed = Math.min(controlParams.speed + 0.5, 18)
+        controlParams.speed = Math.min(controlParams.speed + 0.5, maxSpeed)
     },
     slower: () => {
         controlParams.speed = Math.max(controlParams.speed - 0.5, 0)
     }
 
 }
-gui.add(controlParams, 'speed').min(0).max(18).step(0.1).listen()
+gui.add(controlParams, 'speed').min(0).max(maxSpeed).step(0.1).listen()
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
@@ -346,6 +347,7 @@ renderer.shadowMap.enabled = true
 const clock = new THREE.Clock()
 
 const tick = () => {
+    const deltaTime = clock.getDelta()
     const elapsedTime = clock.getElapsedTime()
 
     for (const [i, cherryLight] of carCherryLights.children.entries()) {
@@ -358,7 +360,7 @@ const tick = () => {
         if (terrain.position.x > ground.geometry.parameters.width) {
             terrain.position.x = terrains.children[(i+1)%2].position.x - ground.geometry.parameters.width + 1
         } else {
-            terrain.position.x += 0.01 * controlParams.speed
+            terrain.position.x += deltaTime * controlParams.speed
         }
     }
 
