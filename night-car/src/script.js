@@ -300,20 +300,28 @@ document.addEventListener('keydown', (event) => {
     }
 })
 
+let controlIntervalId = null;
 function handleLongClick(buttonId, callback) {
-    let interval;
     const start = () => {
-        interval = setInterval(() => {
+        if (!!controlIntervalId) {
+            clearInterval(controlIntervalId)
+            controlIntervalId = null
+        }
+        controlIntervalId = setInterval(() => {
             callback()
         }, 100)
     }
-    const stop = () => {
-        clearInterval(interval)
+    const stop = (event) => {
+        clearInterval(controlIntervalId)
+        controlIntervalId = null
     }
     document.querySelector(buttonId).addEventListener('mousedown', start)
     document.querySelector(buttonId).addEventListener('mouseup', stop)
     document.querySelector(buttonId).addEventListener('touchstart', start)
     document.querySelector(buttonId).addEventListener('touchend', stop)
+    document.querySelector(buttonId).addEventListener('touchmove', stop)
+    document.querySelector(buttonId).addEventListener('touchcancel', stop)
+    document.querySelector(buttonId).addEventListener('touchleave', stop)
 }
 
 handleLongClick("#up", () => {controlParams.faster()})
