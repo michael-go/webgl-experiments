@@ -174,18 +174,22 @@ car.add(carWheels)
 
 const carFrontLights = new THREE.Group()
 for (let i = 0; i < 2; i++) {
-    const light = new THREE.PointLight('yellow', 2, 20)
-    light.position.y = carBody.position.y * 0.1
-    light.position.z = -carBody.geometry.parameters.depth 
-    light.position.x = (i % 2 == 0 ? 1 : -1) * carBody.geometry.parameters.width * 0.3
+    const light = new THREE.SpotLight('yellow', 2, 100, Math.PI * 0.2, 0.2, 1)
+    light.position.x = (i % 2 == 0 ? 1 : -1) * carBody.geometry.parameters.width * 0.37
+    light.position.y = carBody.geometry.parameters.height + 0.1
+    light.position.z = -carBody.geometry.parameters.depth / 2 + 0.3
+    light.target.position.x = light.position.x - 10
+    light.target.position.y = light.position.y
+    light.target.position.z = light.position.z - 200
     light.castShadow = true
+    carFrontLights.add(light.target)
     carFrontLights.add(light)
 }
 car.add(carFrontLights)
 
 const carBackLights = new THREE.Group()
 for (let i = 0; i < 2; i++) {
-    const light = new THREE.PointLight('darkred', 0.5, 5)
+    const light = new THREE.PointLight('darkred', 0.7, 5)
     light.position.y = carBody.position.y * 0.1 + 0.6
     light.position.z = carBody.geometry.parameters.depth / 2 + 0.2
     light.position.x = (i % 2 == 0 ? 1 : -1) * carBody.geometry.parameters.width * 0.3
