@@ -155,6 +155,18 @@ const carTop = new THREE.Mesh(
 carTop.position.y = carBody.position.y + carBody.geometry.parameters.height * 0.5 + carTop.geometry.parameters.height * 0.5
 car.add(carTop)
 
+const carCherryBox = new THREE.Mesh(
+    new THREE.BoxGeometry(1.2, 0.2, 0.3),
+    new THREE.MeshStandardMaterial({ 
+        color: 'darkblue',
+        transparent: true,
+        opacity: 0.7,
+    })
+)
+carCherryBox.position.y = carTop.position.y + carTop.geometry.parameters.height * 0.5 + carCherryBox.geometry.parameters.height * 0.5
+carCherryBox.position.z 
+car.add(carCherryBox)
+
 const carWheels = new THREE.Group()
 for (let i = 0; i < 4; i++) {
     const wheel = new THREE.Mesh(
@@ -202,7 +214,7 @@ const carCherryLights = new THREE.Group()
 for (let i = 0; i < 2; i++) {
     const color = i < 1 ? 'red' : 'blue'
     const light = new THREE.PointLight(color, 10 , 2)
-    light.position.y = carTop.position.y + carTop.geometry.parameters.height*2
+    light.position.y = carTop.position.y + carTop.geometry.parameters.height*2 - 0.4
     light.position.x = (i % 2 == 0 ? 1 : -1) * carTop.geometry.parameters.width * 0.5
     carCherryLights.add(light)
 }
