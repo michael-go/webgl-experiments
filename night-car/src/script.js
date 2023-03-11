@@ -204,7 +204,7 @@ function mainScene() {
 
     const carFrontLights = new THREE.Group()
     for (let i = 0; i < 2; i++) {
-        const light = new THREE.SpotLight('yellow', 2, 100, Math.PI * 0.2, 0.2, 1)
+        const light = new THREE.SpotLight('yellow', 2, 100, Math.PI * 0.25, 0.2, 1)
         light.position.x = (i % 2 == 0 ? 1 : -1) * carBody.geometry.parameters.width * 0.37
         light.position.y = carBody.geometry.parameters.height + 0.1
         light.position.z = -carBody.geometry.parameters.depth / 2 + 0.3
