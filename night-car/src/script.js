@@ -6,10 +6,15 @@ import * as dat from 'lil-gui'
  * Base
  */
 // Debug
+function isDebug() {
+    return window.location.hash === '#debug'
+}
+
 const gui = new dat.GUI().hide()
-if (window.location.hash === '#debug') {
+if (isDebug()) {
     gui.show()
 }
+
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -374,6 +379,9 @@ function mainScene() {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     renderer.setClearColor(fogColor)
     renderer.shadowMap.enabled = true
+    if (isDebug()) {
+        scene.add(new THREE.AxesHelper(5))
+    }
 
     /**
      * Animate
