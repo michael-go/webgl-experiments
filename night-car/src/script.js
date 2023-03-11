@@ -407,7 +407,6 @@ function mainScene() {
         }
 
         car.position.y = Math.sin(elapsedTime * controlParams.speed / 1.6) * 0.02
-        car.rotation.z = Math.sin(elapsedTime * controlParams.speed / 1.6) * 0.02
         car.position.z += Math.sin(elapsedTime * controlParams.speed / 3.7) * 0.001
 
         // Update controls
