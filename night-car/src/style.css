@@ -43,6 +43,10 @@ body
     background: rgba(255, 255, 255, 0.2);
     z-index: 100;
     border-radius: 10%;
+    /* prevent text selection when long pressing */
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
 }
 
 .arrowkey:active {
