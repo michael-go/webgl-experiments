@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'lil-gui'
+import gsap from 'gsap'
 
 /**
  * Base
@@ -293,9 +294,6 @@ function mainScene() {
      */
     // Base camera
     const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-    camera.position.x = 8
-    camera.position.y = 7
-    camera.position.z = 12
     scene.add(camera)
 
     const maxSpeed = 120
@@ -389,8 +387,10 @@ function mainScene() {
     /**
      * Animate
      */
-    const clock = new THREE.Clock()
+    camera.position.set(-5, 30, 40)
+    gsap.to(camera.position, { duration: 3, delay: 1, x: 10, y: 7, z: 10  } )
 
+    const clock = new THREE.Clock()
     const tick = () => {
         const deltaTime = clock.getDelta()
         const elapsedTime = clock.getElapsedTime()
