@@ -28,11 +28,14 @@ const grassAmbientOcclusionTexture = textureLoader.load('/textures/grass/ambient
 const grassNormalTexture = textureLoader.load('/textures/grass/normal.jpg')
 const grassRoughnessTexture = textureLoader.load('/textures/grass/roughness.jpg')
 
+const loadingDiv = document.querySelector('#loading')
+
 THREE.DefaultLoadingManager.onError = (url) => {
     console.error('Error loading', url)
+    loadingDiv.innerHTML = `Error Loading\n${url}`
 }
 THREE.DefaultLoadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {
-    document.querySelector('#loading').innerHTML = `LOADING (${itemsLoaded / itemsTotal * 100}%)`
+    loadingDiv.innerHTML = `LOADING (${itemsLoaded / itemsTotal * 100}%)`
 }
 THREE.DefaultLoadingManager.onLoad = () => {
     grassColorTexture.repeat.set(8, 8)
@@ -54,7 +57,7 @@ THREE.DefaultLoadingManager.onLoad = () => {
 }
 
 function mainScene() {
-    document.querySelector('#loading').style.display = 'none'
+    loadingDiv.style.display = 'none'
 
     /**
      * Scene
