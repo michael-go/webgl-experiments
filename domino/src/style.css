@@ -36,3 +36,26 @@ body
     align-items: center;
 }
 
+.button {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    z-index: 100;
+    border-radius: 10%;
+    /* prevent text selection when long pressing */
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+}
+
+.button:active {
+    background: rgba(50, 255, 50, 0.3);
+}
+
+.button.play {
+    top: 10px;
+    left: 10px;
+    font-size: xx-large
+}
+
